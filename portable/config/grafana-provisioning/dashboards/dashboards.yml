@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: Centinela SQL Server PI
+    orgId: 1
+    folder: Centinela
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: ${CENTINELA_DASHBOARDS_PATH}

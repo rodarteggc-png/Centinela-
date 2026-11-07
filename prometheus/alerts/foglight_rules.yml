@@ -1,0 +1,105 @@
+# ============================================================
+#  Centinela — Reglas de Alerta Estándar Quest Foglight
+#  Severidades: FATAL (🔴), CRITICAL (🟠), WARNING (🟡)
+# ============================================================
+
+groups:
+  - name: foglight_database_alarms
+    rules:
+      # ────────────────────────────────────────────────────────
+      # 🔴 SEVERIDAD: FATAL (Riesgo Inmediato de Caída / Datos)
+      # ────────────────────────────────────────────────────────
+      - alert: FoglightHADRReplicaDisconnected
+        expr: sqlserver_alwayson_connected_state == 0
+        for: 1m
+        labels:
+          severity: fatal
+          category: high_availability
+        annotations:
+          summary: "🔴 FATAL: Réplica Always On Desconectada"
+          description: "La réplica {{ $labels.replica_server_name }} del clúster {{ $labels.cluster }} ha perdido la conexión de sincronización."
+
+      - alert: FoglightHADRSyncBroken
+        expr: sqlserver_alwayson_synchronization_health == 0
+        for: 1m
+        labels:
+          severity: fatal
+          category: high_availability
+        annotations:
+          summary: "🔴 FATAL: Sincronización HADR Rota (Not Healthy)"
+          description: "El grupo de disponibilidad {{ $labels.ag_name }} en {{ $labels.replica_server_name }} se encuentra en estado NOT HEALTHY."
+
+      - alert: FoglightPersistentDeadlocks
+        expr: rate(sqlserver_deadlocks_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: fatal
+          category: concurrency
+        annotations:
+          summary: "🔴 FATAL: Ocurrencia Continua de Deadlocks"
+          description: "Se están detectando interbloqueos (deadlocks) sostenidos en el servidor {{ $labels.target }}. Transacciones abortadas por el motor."
+
+      # ────────────────────────────────────────────────────────
+      # 🟠 SEVERIDAD: CRITICAL (Degradación Severa de Recursos)
+      # ────────────────────────────────────────────────────────
+      - alert: FoglightCriticalMemoryPressurePLE
+        expr: sqlserver_page_life_expectancy_seconds < 300
+        for: 3m
+        labels:
+          severity: critical
+          category: memory
+        annotations:
+          summary: "🟠 CRITICAL: Presión Crítica de Memoria RAM (PLE < 300s)"
+          description: 'El Page Life Expectancy en {{ $labels.target }} cayó a {{ $value | printf "%.0f" }}s. El motor está purgando páginas bruscamente, forzando lecturas a disco.'
+
+      # ────────────────────────────────────────────────────────
+      # 🟡 SEVERIDAD: WARNING (Desviación / Alerta Temprana)
+      # ────────────────────────────────────────────────────────
+      - alert: FoglightBufferCacheMissRatio
+        expr: sqlserver_buffer_cache_hit_ratio < 95
+        for: 5m
+        labels:
+          severity: warning
+          category: memory
+        annotations:
+          summary: "🟡 WARNING: Ratio de Acierto en Buffer Cache Bajo (< 95%)"
+          description: 'El Buffer Cache Hit Ratio en {{ $labels.target }} está en {{ $value | printf "%.1f" }}%. Más del 5% de las lecturas están acudiendo al disco.'
+
+      - alert: FoglightSlowQueriesAccumulation
+        expr: sqlserver_slow_queries_total > 5
+        for: 2m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "🟡 WARNING: Consultas Lentas (> 5s) Acumuladas"
+          description: "Existen {{ $value }} consultas activas superando los 5 segundos de ejecución en {{ $labels.target }}."
+
+      - alert: FoglightHighRecompilationRate
+        expr: rate(sqlserver_sql_recompilations_total[5m]) > 50
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "🟡 WARNING: Alta Tasa de Recompilación de Planes SQL"
+          description: "La tasa de recompilaciones en {{ $labels.target }} es elevada (>50/s). Posible causa: consultas ad-hoc sin parametrizar."
+      - alert: FoglightHighWorkloadSaturation
+        expr: sum by (target, cluster) (centinela_aas_total) > on (target, cluster) max by (target, cluster) (centinela_sql_visible_schedulers)
+        for: 5m
+        labels:
+          severity: critical
+          category: workload
+        annotations:
+          summary: "Saturación PI: AAS supera los schedulers SQL visibles"
+          description: "El AAS muestreado en {{ $labels.target }} supera los schedulers disponibles para carga de usuario. Confirma la cobertura y revisa el desglose de sesiones."
+
+      - alert: FoglightSamplerLowCoverage
+        expr: centinela_sampler_success_ratio < 0.8
+        for: 5m
+        labels:
+          severity: warning
+          category: collector
+        annotations:
+          summary: "Cobertura baja del sampler PI"
+          description: "Menos del 80% de las muestras del sampler SQL Server en {{ $labels.target }} terminaron correctamente durante la ventana reciente."

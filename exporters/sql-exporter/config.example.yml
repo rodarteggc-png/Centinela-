@@ -1,0 +1,435 @@
+# SQL Server exporter targets generated from inventory/databases_fleet.csv
+# SQL Server instances: 2
+global:
+  scrape_timeout_offset: 500ms
+  min_interval: 0s
+  max_connections: 3
+  max_idle_connections: 3
+jobs:
+  - job_name: sqlserver_fleet
+    collectors:
+      - mssql_standard
+      - mssql_alwayson
+      - mssql_foglight
+    static_configs:
+      - targets:
+          "sql-node-1": "sqlserver://REPLACE_WITH_MONITOR_USER:REPLACE_WITH_MONITOR_PASSWORD@sqlserver1.example.invalid:1433?database=master&encrypt=disable"
+        labels:
+          cluster: "example-cluster"
+          environment: "development"
+          db_engine: "sqlserver"
+      - targets:
+          "sql-node-2": "sqlserver://REPLACE_WITH_MONITOR_USER:REPLACE_WITH_MONITOR_PASSWORD@sqlserver2.example.invalid:1433?database=master&encrypt=disable"
+        labels:
+          cluster: "example-cluster"
+          environment: "development"
+          db_engine: "sqlserver"
+collectors:
+  # 1. Colector Est  ndar de Rendimiento e Instancia
+  - collector_name: mssql_standard
+    metrics:
+      # Conexiones activas por base de datos
+      - metric_name: sqlserver_connections_active
+        type: gauge
+        help: "N  mero de conexiones activas a SQL Server"
+        values: [count]
+        query: |
+          SELECT
+            DB_NAME(dbid) AS database_name,
+            COUNT(*) AS count
+          FROM sys.sysprocesses
+          WHERE dbid > 0
+            AND status != 'background'
+          GROUP BY DB_NAME(dbid)
+        key_labels: [database_name]
+
+      # Consultas lentas (m  s de 5 segundos de ejecuci  n)
+      - metric_name: sqlserver_slow_queries_total
+        type: gauge
+        help: "Queries activos con tiempo de ejecuci  n mayor a 5 segundos"
+        values: [count]
+        query: |
+          SELECT COUNT(*) AS count
+          FROM sys.dm_exec_requests r
+          CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) t
+          WHERE r.total_elapsed_time > 5000
+
+      # Porcentaje de uso de CPU del proceso SQL Server
+      - metric_name: sqlserver_cpu_usage_percent
+        type: gauge
+        help: "Porcentaje de CPU usado por SQL Server"
+        values: [cpu_usage]
+        query: |
+          SELECT
+            record.value('(./Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS cpu_usage
+          FROM (
+            SELECT TOP 1 CONVERT(XML, record) AS record
+            FROM sys.dm_os_ring_buffers
+            WHERE ring_buffer_type = N'RING_BUFFER_SCHEDULER_MONITOR'
+              AND record LIKE '%<SystemHealth>%'
+            ORDER BY timestamp DESC
+          ) AS ring_data
+
+      # Total acumulado de Deadlocks
+      - metric_name: sqlserver_deadlocks_total
+        type: counter
+        help: "Total de deadlocks registrados"
+        values: [deadlocks]
+        query: |
+          SELECT cntr_value AS deadlocks
+          FROM sys.dm_os_performance_counters
+          WHERE counter_name = 'Number of Deadlocks/sec'
+            AND instance_name = '_Total'
+
+      # Tama  o de base de datos en Megabytes
+      - metric_name: sqlserver_database_size_mb
+        type: gauge
+        help: "Tama  o de cada base de datos en MB"
+        values: [size_mb]
+        query: |
+          SELECT
+            name AS database_name,
+            SUM(size * 8.0 / 1024) AS size_mb
+          FROM sys.master_files
+          GROUP BY name
+        key_labels: [database_name]
+
+      # Top Wait Stats (Performance Investigator para SQL Server)
+      - metric_name: sqlserver_wait_stats_ms
+        type: counter
+        help: "Tiempo de espera acumulado por tipo de espera (ms)"
+        values: [wait_time_ms]
+        query: |
+          SELECT TOP 10
+            wait_type,
+            wait_time_ms
+          FROM sys.dm_os_wait_stats
+          -- Keep this benign/background wait list identical to sqlserver_wait_category_time_ms.
+          WHERE wait_type NOT IN (
+            'BROKER_EVENTHANDLER', 'BROKER_RECEIVE_WAITFOR', 'BROKER_TASK_STOP',
+            'BROKER_TO_FLUSH', 'BROKER_TRANSMITTER', 'CHECKPOINT_QUEUE', 'CHKPT',
+            'CLR_AUTO_EVENT', 'CLR_MANUAL_EVENT', 'CLR_SEMAPHORE', 'CXCONSUMER',
+            'DBMIRROR_DBM_EVENT', 'DBMIRROR_EVENTS_QUEUE', 'DBMIRROR_WORKER_QUEUE',
+            'DBMIRRORING_CMD', 'DIRTY_PAGE_POLL', 'DISPATCHER_QUEUE_SEMAPHORE',
+            'EXECSYNC', 'FSAGENT', 'FT_IFTS_SCHEDULER_IDLE_WAIT', 'FT_IFTSHC_MUTEX',
+            'HADR_CLUSAPI_CALL', 'HADR_FILESTREAM_IOMGR_IOCOMPLETION',
+            'HADR_LOGCAPTURE_WAIT', 'HADR_NOTIFICATION_DEQUEUE', 'HADR_TIMER_TASK',
+            'HADR_WORK_QUEUE', 'KSOURCE_WAKEUP', 'LAZYWRITER_SLEEP', 'LOGMGR_QUEUE',
+            'MEMORY_ALLOCATION_EXT', 'ONDEMAND_TASK_QUEUE',
+            'PARALLEL_REDO_DRAIN_WORKER', 'PARALLEL_REDO_LOG_CACHE',
+            'PARALLEL_REDO_TRAN_LIST', 'PARALLEL_REDO_WORKER_SYNC',
+            'PARALLEL_REDO_WORKER_WAIT_WORK', 'PREEMPTIVE_XE_GETTARGETSTATE',
+            'PWAIT_ALL_COMPONENTS_INITIALIZED', 'PWAIT_DIRECTLOGCONSUMER_GETNEXT',
+            'QDS_ASYNC_QUEUE', 'QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP',
+            'QDS_PERSIST_TASK_MAIN_LOOP_SLEEP', 'QDS_SHUTDOWN_QUEUE',
+            'REDO_THREAD_PENDING_WORK', 'REQUEST_FOR_DEADLOCK_SEARCH',
+            'RESOURCE_QUEUE', 'SERVER_IDLE_CHECK', 'SLEEP_BPOOL_FLUSH',
+            'SLEEP_DBSTARTUP', 'SLEEP_DCOMSTARTUP', 'SLEEP_MASTERDBREADY',
+            'SLEEP_MASTERMDREADY', 'SLEEP_MASTERUPGRADED', 'SLEEP_MSDBSTARTUP',
+            'SLEEP_SYSTEMTASK', 'SLEEP_TASK', 'SLEEP_TEMPDBSTARTUP',
+            'SNI_HTTP_ACCEPT', 'SOS_WORK_DISPATCHER', 'SP_SERVER_DIAGNOSTICS_SLEEP',
+            'SQLTRACE_BUFFER_FLUSH', 'SQLTRACE_INCREMENTAL_FLUSH_SLEEP',
+            'SQLTRACE_WAIT_ENTRIES', 'VDI_CLIENT_OTHER', 'WAIT_FOR_RESULTS',
+            'WAITFOR', 'WAITFOR_TASKSHUTDOWN', 'WAIT_XTP_CKPT_CLOSE',
+            'WAIT_XTP_HOST_WAIT', 'WAIT_XTP_OFFLINE_CKPT_NEW_LOG',
+            'WAIT_XTP_RECOVERY', 'XE_DISPATCHER_JOIN', 'XE_DISPATCHER_WAIT',
+            'XE_TIMER_EVENT'
+          )
+          ORDER BY wait_time_ms DESC
+        key_labels: [wait_type]
+
+  # 2. Colector Always On (High Availability & Disaster Recovery - HADR)
+  - collector_name: mssql_alwayson
+    metrics:
+      # Rol del nodo (1=PRIMARY, 2=SECONDARY, 0=OTHER)
+      - metric_name: sqlserver_alwayson_role
+        type: gauge
+        help: "Rol Always On: 1=PRIMARY, 2=SECONDARY, 0=OTHER"
+        values: [role_num]
+        query: |
+          SELECT 
+            ag.name AS ag_name,
+            ar.replica_server_name,
+            CASE ars.role_desc 
+              WHEN 'PRIMARY' THEN 1 
+              WHEN 'SECONDARY' THEN 2 
+              ELSE 0 
+            END AS role_num
+          FROM sys.availability_groups ag
+          JOIN sys.availability_replicas ar ON ag.group_id = ar.group_id
+          JOIN sys.dm_hadr_availability_replica_states ars ON ar.replica_id = ars.replica_id
+          WHERE ar.replica_server_name = @@SERVERNAME
+        key_labels: [ag_name, replica_server_name]
+
+      # Salud de sincronizaci  n de la r  plica (2=HEALTHY, 1=PARTIALLY_HEALTHY, 0=NOT_HEALTHY)
+      - metric_name: sqlserver_alwayson_synchronization_health
+        type: gauge
+        help: "Salud de sincronizaci  n: 2=HEALTHY, 1=PARTIALLY_HEALTHY, 0=NOT_HEALTHY"
+        values: [health_num]
+        query: |
+          SELECT 
+            ag.name AS ag_name,
+            ar.replica_server_name,
+            CASE ars.synchronization_health_desc 
+              WHEN 'HEALTHY' THEN 2 
+              WHEN 'PARTIALLY_HEALTHY' THEN 1 
+              ELSE 0 
+            END AS health_num
+          FROM sys.availability_groups ag
+          JOIN sys.availability_replicas ar ON ag.group_id = ar.group_id
+          JOIN sys.dm_hadr_availability_replica_states ars ON ar.replica_id = ars.replica_id
+          WHERE ar.replica_server_name = @@SERVERNAME
+        key_labels: [ag_name, replica_server_name]
+
+      # Estado de conexi  n de la r  plica (1=CONNECTED, 0=DISCONNECTED)
+      - metric_name: sqlserver_alwayson_connected_state
+        type: gauge
+        help: "Estado de conexi  n: 1=CONNECTED, 0=DISCONNECTED"
+        values: [connected_num]
+        query: |
+          SELECT 
+            ag.name AS ag_name,
+            ar.replica_server_name,
+            CASE ars.connected_state_desc 
+              WHEN 'CONNECTED' THEN 1 
+              ELSE 0 
+            END AS connected_num
+          FROM sys.availability_groups ag
+          JOIN sys.availability_replicas ar ON ag.group_id = ar.group_id
+          JOIN sys.dm_hadr_availability_replica_states ars ON ar.replica_id = ars.replica_id
+          WHERE ar.replica_server_name = @@SERVERNAME
+        key_labels: [ag_name, replica_server_name]
+
+  # 3. Colector Foglight Performance Investigator (PI, Health Strip & Workload)
+  - collector_name: mssql_foglight
+    metrics:
+      # Foglight Health Strip: Buffer Cache Hit Ratio (%)
+      - metric_name: sqlserver_buffer_cache_hit_ratio
+        type: gauge
+        help: "Porcentaje de aciertos en Buffer Cache (Foglight Target > 98%)"
+        values: [hit_ratio]
+        query: |
+          SELECT 
+            ROUND((a.cntr_value * 100.0 / NULLIF(b.cntr_value, 0)), 2) AS hit_ratio
+          FROM sys.dm_os_performance_counters a
+          JOIN sys.dm_os_performance_counters b 
+            ON RTRIM(b.counter_name) = 'Buffer cache hit ratio base'
+          WHERE RTRIM(a.counter_name) = 'Buffer cache hit ratio'
+            AND (a.instance_name = '' OR a.instance_name LIKE '%default%')
+
+      # Foglight Health Strip: Page Life Expectancy (Segundos)
+      - metric_name: sqlserver_page_life_expectancy_seconds
+        type: gauge
+        help: "Segundos que permanecen las p  ginas en RAM (Foglight Target > 300s)"
+        values: [ple_seconds]
+        query: |
+          SELECT MIN(cntr_value) AS ple_seconds
+          FROM sys.dm_os_performance_counters
+          WHERE RTRIM(counter_name) = 'Page life expectancy'
+
+      # Foglight Health Strip: Batch Requests Total
+      - metric_name: sqlserver_batch_requests_total
+        type: counter
+        help: "Total acumulado de solicitudes por lote ejecutadas"
+        values: [total]
+        query: |
+          SELECT cntr_value AS total
+          FROM sys.dm_os_performance_counters
+          WHERE RTRIM(counter_name) = 'Batch Requests/sec'
+
+      # Foglight Health Strip: SQL Compilaciones y Recompilaciones
+      - metric_name: sqlserver_sql_compilations_total
+        type: counter
+        help: "Total de compilaciones de SQL"
+        values: [total]
+        query: |
+          SELECT cntr_value AS total
+          FROM sys.dm_os_performance_counters
+          WHERE RTRIM(counter_name) = 'SQL Compilations/sec'
+
+      - metric_name: sqlserver_sql_recompilations_total
+        type: counter
+        help: "Total de re-compilaciones de SQL"
+        values: [total]
+        query: |
+          SELECT cntr_value AS total
+          FROM sys.dm_os_performance_counters
+          WHERE RTRIM(counter_name) = 'SQL Re-Compilations/sec'
+
+      # Foglight Performance Investigator: Desglose Crom  tico de Esperas (Workload Breakdown)
+      - metric_name: sqlserver_wait_category_time_ms
+        type: counter
+        help: "Tiempo acumulado de esperas agrupado por categor  a Foglight"
+        values: [wait_time_ms]
+        query: |
+          SELECT 
+            category,
+            SUM(wait_time_ms) AS wait_time_ms
+          FROM (
+            SELECT 
+              CASE 
+                WHEN wait_type LIKE 'PAGEIOLATCH%' OR wait_type IN ('WRITELOG', 'IO_COMPLETION', 'ASYNC_IO_COMPLETION', 'BACKUPIO') THEN 'I/O & Storage'
+                WHEN wait_type LIKE 'LCK_M%' OR wait_type IN ('PAGELATCH_UP', 'PAGELATCH_SH', 'PAGELATCH_EX', 'THREADPOOL') THEN 'Lock & Concurrency'
+                WHEN wait_type = 'SOS_SCHEDULER_YIELD' THEN 'CPU'
+                WHEN wait_type IN ('RESOURCE_SEMAPHORE', 'CMEMTHREAD') THEN 'Memory'
+                WHEN wait_type = 'ASYNC_NETWORK_IO' THEN 'Network'
+                WHEN wait_type LIKE 'CX%' THEN 'Other'
+                ELSE 'Other'
+              END AS category,
+              wait_time_ms
+            FROM sys.dm_os_wait_stats
+            WHERE wait_type NOT IN (
+              'BROKER_EVENTHANDLER', 'BROKER_RECEIVE_WAITFOR', 'BROKER_TASK_STOP',
+              'BROKER_TO_FLUSH', 'BROKER_TRANSMITTER', 'CHECKPOINT_QUEUE', 'CHKPT',
+              'CLR_AUTO_EVENT', 'CLR_MANUAL_EVENT', 'CLR_SEMAPHORE', 'CXCONSUMER',
+              'DBMIRROR_DBM_EVENT', 'DBMIRROR_EVENTS_QUEUE', 'DBMIRROR_WORKER_QUEUE',
+              'DBMIRRORING_CMD', 'DIRTY_PAGE_POLL', 'DISPATCHER_QUEUE_SEMAPHORE',
+              'EXECSYNC', 'FSAGENT', 'FT_IFTS_SCHEDULER_IDLE_WAIT', 'FT_IFTSHC_MUTEX',
+              'HADR_CLUSAPI_CALL', 'HADR_FILESTREAM_IOMGR_IOCOMPLETION',
+              'HADR_LOGCAPTURE_WAIT', 'HADR_NOTIFICATION_DEQUEUE', 'HADR_TIMER_TASK',
+              'HADR_WORK_QUEUE', 'KSOURCE_WAKEUP', 'LAZYWRITER_SLEEP', 'LOGMGR_QUEUE',
+              'MEMORY_ALLOCATION_EXT', 'ONDEMAND_TASK_QUEUE',
+              'PARALLEL_REDO_DRAIN_WORKER', 'PARALLEL_REDO_LOG_CACHE',
+              'PARALLEL_REDO_TRAN_LIST', 'PARALLEL_REDO_WORKER_SYNC',
+              'PARALLEL_REDO_WORKER_WAIT_WORK', 'PREEMPTIVE_XE_GETTARGETSTATE',
+              'PWAIT_ALL_COMPONENTS_INITIALIZED', 'PWAIT_DIRECTLOGCONSUMER_GETNEXT',
+              'QDS_ASYNC_QUEUE', 'QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP',
+              'QDS_PERSIST_TASK_MAIN_LOOP_SLEEP', 'QDS_SHUTDOWN_QUEUE',
+              'REDO_THREAD_PENDING_WORK', 'REQUEST_FOR_DEADLOCK_SEARCH',
+              'RESOURCE_QUEUE', 'SERVER_IDLE_CHECK', 'SLEEP_BPOOL_FLUSH',
+              'SLEEP_DBSTARTUP', 'SLEEP_DCOMSTARTUP', 'SLEEP_MASTERDBREADY',
+              'SLEEP_MASTERMDREADY', 'SLEEP_MASTERUPGRADED', 'SLEEP_MSDBSTARTUP',
+              'SLEEP_SYSTEMTASK', 'SLEEP_TASK', 'SLEEP_TEMPDBSTARTUP',
+              'SNI_HTTP_ACCEPT', 'SOS_WORK_DISPATCHER', 'SP_SERVER_DIAGNOSTICS_SLEEP',
+              'SQLTRACE_BUFFER_FLUSH', 'SQLTRACE_INCREMENTAL_FLUSH_SLEEP',
+              'SQLTRACE_WAIT_ENTRIES', 'VDI_CLIENT_OTHER', 'WAIT_FOR_RESULTS',
+              'WAITFOR', 'WAITFOR_TASKSHUTDOWN', 'WAIT_XTP_CKPT_CLOSE',
+              'WAIT_XTP_HOST_WAIT', 'WAIT_XTP_OFFLINE_CKPT_NEW_LOG',
+              'WAIT_XTP_RECOVERY', 'XE_DISPATCHER_JOIN', 'XE_DISPATCHER_WAIT',
+              'XE_TIMER_EVENT'
+            )
+          ) AS c
+          GROUP BY category
+        key_labels: [category]
+
+      # Foglight Top SQL Statements (Top 10 por consumo de CPU)
+      - metric_name: sqlserver_top_sql_stats
+        type: gauge
+        help: "Top consultas SQL por consumo de recursos"
+        value_label: stat_name
+        values: [cpu_time_ms, execution_count, avg_elapsed_ms, logical_reads]
+        query: |
+          SELECT TOP 10
+            query_snippet,
+            database_name,
+            SUM(execution_count) AS execution_count,
+            SUM(cpu_time_ms) AS cpu_time_ms,
+            SUM(total_elapsed_ms) / NULLIF(SUM(execution_count), 0) AS avg_elapsed_ms,
+            SUM(logical_reads) AS logical_reads
+          FROM (
+            SELECT
+              REPLACE(REPLACE(REPLACE(REPLACE(LEFT(LTRIM(RTRIM(t.text)), 70), CHAR(13), ' '), CHAR(10), ' '), CHAR(9), ' '), '\\', '/') AS query_snippet,
+              ISNULL(DB_NAME(t.dbid), 'master') AS database_name,
+              qs.execution_count AS execution_count,
+              qs.total_worker_time / 1000 AS cpu_time_ms,
+              qs.total_elapsed_time / 1000 AS total_elapsed_ms,
+              qs.total_logical_reads AS logical_reads
+            FROM sys.dm_exec_query_stats qs
+            CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) t
+            WHERE t.text IS NOT NULL
+          ) AS q
+          GROUP BY query_snippet, database_name
+          ORDER BY SUM(cpu_time_ms) DESC
+        key_labels: [query_snippet, database_name]
+
+      # Foglight Client Investigator: Conexiones por Aplicaci  n Cliente
+      - metric_name: sqlserver_sessions_by_application
+        type: gauge
+        help: "Conexiones activas agrupadas por aplicaci  n cliente"
+        values: [session_count]
+        query: |
+          SELECT 
+            CASE 
+              WHEN program_name LIKE '%.Net%' THEN '.NET Application'
+              WHEN program_name LIKE '%Management Studio%' THEN 'SSMS (DBA)'
+              WHEN program_name LIKE '%SQLAgent%' THEN 'SQL Agent'
+              WHEN program_name LIKE '%Replication%' THEN 'Replication'
+              WHEN program_name IS NULL OR program_name = '' THEN 'Unknown/Direct'
+              ELSE LEFT(program_name, 25)
+            END AS application_name,
+            COUNT(*) AS session_count
+          FROM sys.sysprocesses
+          WHERE dbid > 0 AND status != 'background'
+          GROUP BY 
+            CASE 
+              WHEN program_name LIKE '%.Net%' THEN '.NET Application'
+              WHEN program_name LIKE '%Management Studio%' THEN 'SSMS (DBA)'
+              WHEN program_name LIKE '%SQLAgent%' THEN 'SQL Agent'
+              WHEN program_name LIKE '%Replication%' THEN 'Replication'
+              WHEN program_name IS NULL OR program_name = '' THEN 'Unknown/Direct'
+              ELSE LEFT(program_name, 25)
+            END
+        key_labels: [application_name]
+
+      # Foglight Storage Runway: Espacio por tipo de archivo (Data MDF vs Log LDF)
+      - metric_name: sqlserver_database_file_size_mb
+        type: gauge
+        help: "Tama  o de archivos de base de datos por tipo (Data MDF vs Log LDF)"
+        values: [size_mb]
+        query: |
+          SELECT 
+            DB_NAME(database_id) AS database_name,
+            CASE type_desc 
+              WHEN 'ROWS' THEN 'DATA (MDF)' 
+              WHEN 'LOG' THEN 'LOG (LDF)' 
+              ELSE type_desc 
+            END AS file_type,
+            SUM(size * 8.0 / 1024) AS size_mb
+          FROM sys.master_files
+          WHERE database_id > 0
+          GROUP BY DB_NAME(database_id), type_desc
+        key_labels: [database_name, file_type]
+
+      # Foglight User/Login Dimension: Conexiones por Usuario/Login
+      - metric_name: sqlserver_sessions_by_login
+        type: gauge
+        help: "Conexiones activas agrupadas por login/usuario"
+        values: [session_count]
+        query: |
+          SELECT 
+            loginame AS login_name,
+            COUNT(*) AS session_count
+          FROM sys.sysprocesses
+          WHERE dbid > 0 AND status != 'background'
+          GROUP BY loginame
+        key_labels: [login_name]
+
+      # Foglight Database Advisory:   ndices Faltantes con Alto Impacto
+      - metric_name: sqlserver_missing_index_advisory
+        type: gauge
+        help: "Sugerencias de indices faltantes por DMVs con impacto estimado"
+        value_label: metric_type
+        values: [user_impact_pct, improvement_score]
+        query: |
+          SELECT TOP 10
+            CAST(d.index_handle AS VARCHAR(16)) AS index_id,
+            ISNULL(DB_NAME(d.database_id), 'db') AS database_name,
+            ISNULL(OBJECT_NAME(d.object_id, d.database_id), 'tbl_' + CAST(d.object_id AS VARCHAR(15))) AS table_name,
+            REPLACE(REPLACE(REPLACE(ISNULL(d.equality_columns, 'N/A'), ' ', ''), '[', ''), ']', '') AS equality_columns,
+            REPLACE(REPLACE(REPLACE(ISNULL(d.included_columns, 'none'), ' ', ''), '[', ''), ']', '') AS included_columns,
+            ROUND(s.avg_user_impact, 1) AS user_impact_pct,
+            ROUND(s.user_seeks * s.avg_total_user_cost * (s.avg_user_impact / 100.0), 1) AS improvement_score
+          FROM sys.dm_db_missing_index_group_stats s
+          JOIN sys.dm_db_missing_index_groups g ON s.group_handle = g.index_group_handle
+          JOIN sys.dm_db_missing_index_details d ON g.index_handle = d.index_handle
+          WHERE d.database_id > 4
+            AND s.avg_user_impact >= 50
+          ORDER BY s.user_seeks * s.avg_total_user_cost * (s.avg_user_impact / 100.0) DESC
+        key_labels:
+          [
+            index_id,
+            database_name,
+            table_name,
+            equality_columns,
+            included_columns,
+          ]

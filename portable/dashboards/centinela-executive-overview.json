@@ -1,0 +1,762 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "database",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Open SQL Server Performance Investigator",
+      "tooltip": "Open the SQL Server engine dashboard",
+      "type": "link",
+      "url": "/d/centinela-sqlserver-cluster"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 99,
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "type": "text",
+      "title": "",
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"background: rgba(13, 20, 36, 0.75); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 2px solid #00F2FE; border-radius: 14px; padding: 18px 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);\">\n  <div style=\"display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;\">\n    <div style=\"display: flex; align-items: center; gap: 18px;\">\n      <div style=\"background: linear-gradient(135deg, rgba(0,242,254,0.2) 0%, rgba(0,82,212,0.2) 100%); border: 1px solid rgba(0,242,254,0.4); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,242,254,0.35);\">\n        <img src=\"/public/img/grafana_icon.svg\" width=\"34\" height=\"34\" style=\"display: block; filter: drop-shadow(0 0 8px rgba(0,242,254,0.6));\" alt=\"Centinela\" />\n      </div>\n      <div>\n        <div style=\"display: flex; align-items: center; gap: 10px; flex-wrap: wrap;\">\n          <span style=\"font-size: 22px; font-weight: 800; color: #f8fafc; letter-spacing: 0.8px;\">CENTINELA OBSERVABILITY</span>\n          <span style=\"background: linear-gradient(135deg, rgba(6,182,212,0.25) 0%, rgba(59,130,246,0.25) 100%); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); font-size: 11px; font-weight: 800; padding: 3px 12px; border-radius: 9999px; text-transform: uppercase;\">Executive Overview</span>\n          <span style=\"background: rgba(16,185,129,0.15); color: #10B981; border: 1px solid rgba(16,185,129,0.3); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;\">Cluster Always On Activo</span>\n        </div>\n        <div style=\"font-size: 12px; color: #94a3b8; margin-top: 5px; display: flex; gap: 20px; flex-wrap: wrap;\">\n          <span><b>Cluster Activo:</b> SQL-CLUSTER-02</span>\n          <span><b>Nodos Reales:</b> SQL-CLUSTER-02nodo1 &bull; SQL-CLUSTER-02nodo2</span>\n          <span><b>Servidor Central:</b> Rocky Linux 9 (sda2110022 / 192.168.220.20)</span>\n        </div>\n      </div>\n    </div>\n    <div style=\"display: flex; gap: 12px; text-align: center;\">\n      <div style=\"background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);\">\n        <div style=\"font-size: 10px; color: #64748b; font-weight: 800;\">NODOS CLUSTER</div>\n        <div style=\"font-size: 16px; font-weight: 900; color: #38bdf8;\">2 Nodos (5000)</div>\n      </div>\n      <div style=\"background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);\">\n        <div style=\"font-size: 10px; color: #64748b; font-weight: 800;\">ESTADO LICENCIAS</div>\n        <div style=\"font-size: 16px; font-weight: 900; color: #10B981;\">100% LIBRE $0</div>\n      </div>\n    </div>\n  </div>\n  <div style=\"display: flex; gap: 10px; margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; flex-wrap: wrap;\">\n    <a href=\"/d/centinela-databases-global-view\" style=\"text-decoration: none; background: linear-gradient(135deg, rgba(6,182,212,0.3) 0%, rgba(59,130,246,0.3) 100%); color: #ffffff; border: 1px solid rgba(56,189,248,0.5); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 12px rgba(56,189,248,0.2);\">🌐 Centinela Global View</a>\n    <a href=\"/d/centinela-sqlserver-cluster\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">🔬 Performance Investigator (PI)</a>\n    <a href=\"#inventory-grid\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">📋 Inventario y Semaforos</a>\n    <a href=\"#fleet-trend\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">📈 Tendencia de Carga AAS</a>\n  </div>\n</div>"
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 100,
+      "title": "CENTINELA - SQL SERVER DATABASE HEALTH",
+      "type": "row"
+    },
+    {
+      "id": 1,
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 0,
+        "y": 5
+      },
+      "type": "stat",
+      "title": "Instancias Monitoreadas Activas",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "count(count by (target) (sqlserver_connections_active))",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 2,
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 5,
+        "y": 5
+      },
+      "type": "stat",
+      "title": "Nodos Clúster Always On Activos",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "count(sqlserver_alwayson_role)",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 3,
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 10,
+        "y": 5
+      },
+      "type": "stat",
+      "title": "Instancias en Estado Normal 🟢",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "count(count by (target) (sqlserver_page_life_expectancy_seconds >= 1000))",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#00C853",
+                "value": null
+              }
+            ]
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 4,
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 15,
+        "y": 5
+      },
+      "type": "stat",
+      "title": "Alertas de Memoria (PLE < 300s)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "count(sqlserver_page_life_expectancy_seconds < 300) or vector(0)",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#00C853",
+                "value": null
+              },
+              {
+                "color": "#FFB300",
+                "value": 1
+              },
+              {
+                "color": "#D32F2F",
+                "value": 3
+              }
+            ]
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 5,
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 19,
+        "y": 5
+      },
+      "type": "stat",
+      "title": "Conexiones Totales en la Flota",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(sqlserver_connections_active)",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 101,
+      "title": "📋 INVENTARIO MAESTRO DE LA FLOTA — SEMÁFOROS Y DIAGNÓSTICO EN VIVO",
+      "type": "row"
+    },
+    {
+      "id": 6,
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "type": "table",
+      "title": "Inventario de Servidores de Base de Datos (Haz clic en cualquier fila para abrir su Performance Investigator)",
+      "description": "Tabla unificada estilo Centinela All Instances Grid. Muestra el estado de salud, carga en vivo y rol HADR de cada servidor.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (target, cluster, environment, db_engine) (sqlserver_connections_active)",
+          "format": "table",
+          "instant": true,
+          "refId": "CONEXIONES"
+        }
+      ],
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "Conexiones Activas",
+            "desc": true
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "links": [
+            {
+              "title": "🔬 Abrir Foglight Performance Investigator para ${__data.fields.target}",
+              "url": "/d/centinela-sqlserver-cluster?var-cluster=${__data.fields.cluster}&var-target=${__data.fields.target}",
+              "targetBlank": false
+            }
+          ]
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "target"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 240
+              },
+              {
+                "id": "displayName",
+                "value": "Instancia / Host Target"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cluster"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 170
+              },
+              {
+                "id": "displayName",
+                "value": "Clúster / Grupo"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "db_engine"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "displayName",
+                "value": "Motor de BD"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "environment"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              },
+              {
+                "id": "displayName",
+                "value": "Entorno"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "displayName",
+                "value": "Conexiones Activas (Carga)"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              }
+            ]
+          }
+        ]
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 102,
+      "title": "🔬 TENDENCIA DE CARGA GLOBAL DE LA FLOTA Y TOP BASES DE DATOS",
+      "type": "row"
+    },
+    {
+      "id": 7,
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 20
+      },
+      "type": "timeseries",
+      "title": "Conexiones Activas en Vivo por Nodo de la Flota en el Tiempo",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (target) (sqlserver_connections_active)",
+          "legendFormat": "{{target}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15
+          },
+          "unit": "short"
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 8,
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 14,
+        "y": 20
+      },
+      "type": "bargauge",
+      "title": "Top 10 Bases de Datos Más Ocupadas de Toda la Flota",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(10, sum by (database_name) (sqlserver_connections_active))",
+          "legendFormat": "{{database_name}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 103,
+      "title": "🚨 FOGLIGHT ALARM TRAY (BANDEJA DE ALARMAS ACTIVAS DE LA FLOTA)",
+      "type": "row"
+    },
+    {
+      "id": 10,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "type": "table",
+      "title": "Bandeja de Alarmas Activas (Severidad Oficial Quest: 🔴 Fatal, 🟠 Critical, 🟡 Warning)",
+      "description": "Alarmas disparadas por umbrales y baselines en toda la flota de bases de datos.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "ALERTS{alertname=~\"Foglight.+\", alertstate=\"firing\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "Severidad",
+            "desc": true
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severity"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              },
+              {
+                "id": "displayName",
+                "value": "Severidad"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "fatal": {
+                        "color": "#D32F2F",
+                        "text": "🔴 FATAL"
+                      },
+                      "critical": {
+                        "color": "#FB8C00",
+                        "text": "🟠 CRITICAL"
+                      },
+                      "warning": {
+                        "color": "#FFB300",
+                        "text": "🟡 WARNING"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "alertname"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 280
+              },
+              {
+                "id": "displayName",
+                "value": "Regla de Alarma"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "target"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 220
+              },
+              {
+                "id": "displayName",
+                "value": "Instancia / Host Afectado"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "category"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              },
+              {
+                "id": "displayName",
+                "value": "Categoría"
+              }
+            ]
+          }
+        ]
+      },
+      "transparent": true
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": [
+    "centinela",
+    "database",
+    "sqlserver",
+    "executive"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "centinela-prometheus"
+        },
+        "definition": "label_values(sqlserver_connections_active, cluster)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Clúster",
+        "multi": true,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(sqlserver_connections_active, cluster)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "centinela-prometheus"
+        },
+        "definition": "label_values(sqlserver_connections_active, environment)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Entorno",
+        "multi": true,
+        "name": "environment",
+        "options": [],
+        "query": {
+          "query": "label_values(sqlserver_connections_active, environment)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
+  "timezone": "browser",
+  "title": "02 - Executive Overview",
+  "uid": "centinela-executive-overview",
+  "version": 1
+}

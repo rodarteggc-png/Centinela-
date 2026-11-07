@@ -1,0 +1,40 @@
+# ============================================================
+#  Prometheus — Configuración de Scraping y Alertas
+#  Centinela — Plataforma de Observabilidad
+# ============================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    platform: "centinela"
+    environment: "local"
+
+# Reglas de alertas
+rule_files:
+  - "alerts/*.yml"
+
+# ──────────────────────────────────────────────────────────
+# JOBS DE SCRAPING
+# ──────────────────────────────────────────────────────────
+scrape_configs:
+  # Auto-monitoreo de Prometheus
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # SQL Server — Métricas de bases de datos SQL Server (On-Prem y Azure SQL)
+  - job_name: "sqlserver"
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["sql-exporter:9399"]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: db_type
+        replacement: "sqlserver"
+
+  # Grafana — auto-monitoreo de la plataforma
+  - job_name: "grafana"
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["grafana:3000"]

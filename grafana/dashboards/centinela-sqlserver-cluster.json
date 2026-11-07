@@ -1,0 +1,1372 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 2,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "dashboard",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Back to Executive Overview",
+      "tooltip": "Return to the SQL Server executive summary",
+      "type": "link",
+      "url": "/d/centinela-executive-overview"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 99,
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "type": "text",
+      "title": "",
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"background: rgba(13, 20, 36, 0.75); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 2px solid #00F2FE; border-radius: 14px; padding: 18px 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);\">\n  <div style=\"display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;\">\n    <div style=\"display: flex; align-items: center; gap: 18px;\">\n      <div style=\"background: linear-gradient(135deg, rgba(0,242,254,0.2) 0%, rgba(0,82,212,0.2) 100%); border: 1px solid rgba(0,242,254,0.4); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(0,242,254,0.35);\">\n        <img src=\"/public/img/grafana_icon.svg\" width=\"34\" height=\"34\" style=\"display: block; filter: drop-shadow(0 0 8px rgba(0,242,254,0.6));\" alt=\"Centinela\" />\n      </div>\n      <div>\n        <div style=\"display: flex; align-items: center; gap: 10px; flex-wrap: wrap;\">\n          <span style=\"font-size: 22px; font-weight: 800; color: #f8fafc; letter-spacing: 0.8px;\">CENTINELA OBSERVABILITY</span>\n          <span style=\"background: linear-gradient(135deg, rgba(6,182,212,0.25) 0%, rgba(59,130,246,0.25) 100%); color: #38bdf8; border: 1px solid rgba(56,189,248,0.4); font-size: 11px; font-weight: 800; padding: 3px 12px; border-radius: 9999px; text-transform: uppercase;\">Performance Investigator</span>\n          <span style=\"background: rgba(16,185,129,0.15); color: #10B981; border: 1px solid rgba(16,185,129,0.3); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px;\">Cluster Always On</span>\n        </div>\n        <div style=\"font-size: 12px; color: #94a3b8; margin-top: 5px; display: flex; gap: 20px; flex-wrap: wrap;\">\n          <span><b>Cluster:</b> $cluster</span>\n          <span><b>Instancia:</b> $target</span>\n          <span><b>HADR:</b> Always On Availability Groups</span>\n          <span><b>Base de Datos:</b> $database</span>\n        </div>\n      </div>\n    </div>\n    <div style=\"display: flex; gap: 12px; text-align: center;\">\n      <div style=\"background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);\">\n        <div style=\"font-size: 10px; color: #64748b; font-weight: 800;\">BUFFER CACHE</div>\n        <div style=\"font-size: 16px; font-weight: 900; color: #10B981;\">> 99.5%</div>\n      </div>\n      <div style=\"background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);\">\n        <div style=\"font-size: 10px; color: #64748b; font-weight: 800;\">PAGE LIFE (PLE)</div>\n        <div style=\"font-size: 16px; font-weight: 900; color: #10B981;\">> 3,000s</div>\n      </div>\n      <div style=\"background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);\">\n        <div style=\"font-size: 10px; color: #64748b; font-weight: 800;\">CORES FISICOS</div>\n        <div style=\"font-size: 16px; font-weight: 900; color: #38bdf8;\">Ver l?nea PI</div>\n      </div>\n    </div>\n  </div>\n  <div style=\"display: flex; gap: 10px; margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; flex-wrap: wrap;\">\n    <a href=\"/d/centinela-databases-global-view\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">🌐 Centinela Global View</a>\n    <a href=\"/d/centinela-sqlserver-cluster?var-cluster=$cluster&var-target=$target\" style=\"text-decoration: none; background: linear-gradient(135deg, rgba(6,182,212,0.3) 0%, rgba(59,130,246,0.3) 100%); color: #ffffff; border: 1px solid rgba(56,189,248,0.5); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 12px rgba(56,189,248,0.2);\">🔬 Performance Investigator (PI)</a>\n    <a href=\"#top-sql\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">📋 Top SQL Statements</a>\n    <a href=\"#advisories\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #38bdf8; border: 1px solid rgba(56,189,248,0.2); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">💡 Centinela Advisories</a>\n    <a href=\"#storage\" style=\"text-decoration: none; background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 11px; padding: 6px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px;\">💾 Storage Runway</a>\n  </div>\n</div>"
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 100,
+      "title": "🔬 CENTINELA PERFORMANCE INVESTIGATOR (PI) — WORKLOAD & RESOURCE TIME (AAS)",
+      "type": "row"
+    },
+    {
+      "id": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 17,
+        "x": 0,
+        "y": 5
+      },
+      "type": "timeseries",
+      "title": "Workload - Active Session Sampling (AAS)",
+      "description": "AAS is the average count of active sessions per successful sample. Successful empty samples count as zero; failed samples are excluded. The red series is SQL Server schedulers available for user workload.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "centinela_aas_total{cluster=~\"$cluster\", target=~\"$target\"}",
+          "legendFormat": "{{category}}",
+          "refId": "AAS"
+        },
+        {
+          "expr": "centinela_sql_visible_schedulers{cluster=~\"$cluster\", target=~\"$target\"}",
+          "legendFormat": "SQL Schedulers",
+          "refId": "CORES"
+        }
+      ],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max",
+            "mean"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 60,
+            "gradientMode": "opacity",
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#2E7D32",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IO"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#1565C0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Lock"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C62828",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F9A825",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Network"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6A1B9A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Other"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#546E7A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SQL Schedulers"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C62828",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "cores",
+                  "mode": "none"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "transparent": true
+    },
+    {
+      "id": 2,
+      "gridPos": {
+        "h": 11,
+        "w": 7,
+        "x": 17,
+        "y": 5
+      },
+      "type": "piechart",
+      "title": "Resource Time Distribution (% of Workload)",
+      "description": "Distribución porcentual del tiempo de motor en las 5 categorías canónicas de Centinela.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (category) (rate(sqlserver_wait_category_time_ms{cluster=~\"$cluster\", target=~\"$target\"}[$__rate_interval]))",
+          "legendFormat": "{{category}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "values": [
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CPU"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#2E7D32",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "I/O & Storage"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#1565C0",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Lock & Concurrency"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C62828",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Memory"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#F9A825",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Network"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6A1B9A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Other"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#546E7A",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 101,
+      "title": "🧭 FOGLIGHT MULTI-DIMENSIONAL SLICERS (DATABASE • CLIENT APP • WAIT EVENT • USER LOGIN)",
+      "type": "row"
+    },
+    {
+      "id": 3,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 17
+      },
+      "type": "bargauge",
+      "title": "Dimension 1: Databases by Active Sessions",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(8, sum by (database_name) (sqlserver_connections_active{cluster=~\"$cluster\", target=~\"$target\"}))",
+          "legendFormat": "{{database_name}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 4,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 6,
+        "y": 17
+      },
+      "type": "bargauge",
+      "title": "Dimension 2: Client Programs (.NET, SSMS, Agent)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (application_name) (sqlserver_sessions_by_application{cluster=~\"$cluster\", target=~\"$target\"})",
+          "legendFormat": "{{application_name}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 5,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 17
+      },
+      "type": "bargauge",
+      "title": "Dimension 3: Wait-event delta rate (NOT active sessions)",
+      "description": "Rate derived from cumulative wait statistics. It is not a count of active sessions.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(8, sum by (wait_type) (rate(sqlserver_wait_stats_ms{cluster=~\"$cluster\", target=~\"$target\"}[$__rate_interval]) / 1000))",
+          "legendFormat": "{{wait_type}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 6,
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 18,
+        "y": 17
+      },
+      "type": "bargauge",
+      "title": "Dimension 4: User Logins by Concurrency",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(8, sum by (login_name) (sqlserver_sessions_by_login{cluster=~\"$cluster\", target=~\"$target\"}))",
+          "legendFormat": "{{login_name}}",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 102,
+      "title": "📋 TOP SQL STATEMENT INVESTIGATOR (STATEMENT GRID CON BARRAS DE IMPACTO)",
+      "type": "row"
+    },
+    {
+      "id": 7,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "type": "table",
+      "title": "Top SQL — Mayor CPU acumulado en caché de planes",
+      "description": "CPU acumulado desde que el plan está en caché; no representa consumo dentro del intervalo seleccionado.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(10, sqlserver_top_sql_stats{cluster=~\"$cluster\", target=~\"$target\", stat_name=\"cpu_time_ms\"})",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "CPU acumulado (ms)",
+            "desc": true
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "query_snippet"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 580
+              },
+              {
+                "id": "displayName",
+                "value": "T-SQL Statement Snippet"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "database_name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 160
+              },
+              {
+                "id": "displayName",
+                "value": "Base de Datos"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "displayName",
+                "value": "CPU acumulado (ms)"
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              }
+            ]
+          }
+        ]
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 103,
+      "title": "💾 STORAGE INVESTIGATOR & ENGINE VITAL SIGNS",
+      "type": "row"
+    },
+    {
+      "id": 8,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 35
+      },
+      "type": "bargauge",
+      "title": "Storage Runway: Data Files (.MDF) vs Log Transaccional (.LDF)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(12, sum by (database_name, file_type) (sqlserver_database_file_size_mb{cluster=~\"$cluster\"}))",
+          "legendFormat": "{{database_name}} ({{file_type}})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 9,
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 12,
+        "y": 35
+      },
+      "type": "timeseries",
+      "title": "Engine Throughput: Batch Requests & Compilations / sec",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(sqlserver_batch_requests_total{cluster=~\"$cluster\"}[1m]))",
+          "legendFormat": "Batch Requests / sec",
+          "refId": "BATCH"
+        },
+        {
+          "expr": "sum(rate(sqlserver_sql_compilations_total{cluster=~\"$cluster\"}[1m]))",
+          "legendFormat": "SQL Compilations / sec",
+          "refId": "COMP"
+        }
+      ],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15
+          },
+          "unit": "reqps"
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 10,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 35
+      },
+      "type": "stat",
+      "title": "Deadlocks Acumulados",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(sqlserver_deadlocks_total{cluster=~\"$cluster\"})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#00C853",
+                "value": null
+              },
+              {
+                "color": "#FFB300",
+                "value": 1
+              },
+              {
+                "color": "#D32F2F",
+                "value": 5
+              }
+            ]
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 11,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 39
+      },
+      "type": "stat",
+      "title": "Queries Lentas (>5s)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(sqlserver_slow_queries_total{cluster=~\"$cluster\"})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#00C853",
+                "value": null
+              },
+              {
+                "color": "#FFB300",
+                "value": 1
+              },
+              {
+                "color": "#D32F2F",
+                "value": 10
+              }
+            ]
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 104,
+      "title": "🏛️ CLÚSTER ALWAYS ON HIGH AVAILABILITY (HADR ROLES & SYNCHRONIZATION)",
+      "type": "row"
+    },
+    {
+      "id": 12,
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 44
+      },
+      "type": "stat",
+      "title": "Always On — Nodo 1 ($cluster-nodo1)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "max(sqlserver_alwayson_role{cluster=~\"$cluster\", target=~\"(?i).*nodo1\"})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "#1565C0",
+                  "text": "PRIMARY (PRINCIPAL)"
+                },
+                "2": {
+                  "color": "#2E7D32",
+                  "text": "SECONDARY (RÉPLICA)"
+                },
+                "0": {
+                  "color": "#D32F2F",
+                  "text": "DESCONECTADO"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 13,
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 6,
+        "y": 44
+      },
+      "type": "stat",
+      "title": "Always On — Nodo 2 ($cluster-nodo2)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "max(sqlserver_alwayson_role{cluster=~\"$cluster\", target=~\"(?i).*nodo2\"})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "1": {
+                  "color": "#1565C0",
+                  "text": "PRIMARY (PRINCIPAL)"
+                },
+                "2": {
+                  "color": "#2E7D32",
+                  "text": "SECONDARY (RÉPLICA)"
+                },
+                "0": {
+                  "color": "#D32F2F",
+                  "text": "DESCONECTADO"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 14,
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 12,
+        "y": 44
+      },
+      "type": "stat",
+      "title": "Salud de Sincronización HADR",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "min(sqlserver_alwayson_synchronization_health{cluster=~\"$cluster\"})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "options": {
+                "2": {
+                  "color": "#00C853",
+                  "text": "HEALTHY (SINCRONIZADO)"
+                },
+                "1": {
+                  "color": "#FFB300",
+                  "text": "PARTIALLY HEALTHY"
+                },
+                "0": {
+                  "color": "#D32F2F",
+                  "text": "NOT HEALTHY"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "transparent": true
+    },
+    {
+      "id": 15,
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 18,
+        "y": 44
+      },
+      "type": "stat",
+      "title": "Conexiones Totales en Clúster",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(sqlserver_connections_active{cluster=~\"$cluster\"})",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          }
+        }
+      },
+      "transparent": true
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 105,
+      "title": "💡 CENTINELA ADVISORY ENGINE — ÍNDICES FALTANTES & OPTIMIZACIONES",
+      "type": "row"
+    },
+    {
+      "id": 16,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 49
+      },
+      "type": "table",
+      "title": "Advisory — Índices Faltantes Recomendados por DMVs (Alto Impacto Estimado)",
+      "description": "Recomendaciones proactivas del motor: Índices donde el impacto estimado por queries supera el 50%. Permite al DBA crear índices cubrientes antes de que causen degradación.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "centinela-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "topk(10, sqlserver_missing_index_advisory{cluster=~\"$cluster\"})",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "sortBy": [
+          {
+            "displayName": "Impacto Estimado (%)",
+            "desc": true
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "database_name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              },
+              {
+                "id": "displayName",
+                "value": "Base de Datos"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "table_name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 180
+              },
+              {
+                "id": "displayName",
+                "value": "Tabla Afectada"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "equality_columns"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 260
+              },
+              {
+                "id": "displayName",
+                "value": "Columnas de Búsqueda (Equality)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "included_columns"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 240
+              },
+              {
+                "id": "displayName",
+                "value": "Columnas Incluidas (Covering)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "gradient-gauge"
+              },
+              {
+                "id": "displayName",
+                "value": "Impacto Estimado (%)"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "transparent": true
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": [
+    "centinela",
+    "foglight",
+    "sqlserver",
+    "cluster",
+    "performance-investigator"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "SRD2010002B1",
+          "value": "SRD2010002B1"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "centinela-prometheus"
+        },
+        "definition": "query_result(count by (cluster) (sqlserver_connections_active))",
+        "hide": 0,
+        "includeAll": false,
+        "label": "CLUSTER SQL",
+        "multi": false,
+        "name": "cluster",
+        "options": [
+          {
+            "selected": true,
+            "text": "SRD2010002B1",
+            "value": "SRD2010002B1"
+          }
+        ],
+        "query": {
+          "query": "query_result(count by (cluster) (sqlserver_connections_active))",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "/cluster=\"([^\"]+)\"/",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "SQL-CLUSTER-02nodo2",
+          "value": "SQL-CLUSTER-02nodo2"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "centinela-prometheus"
+        },
+        "definition": "label_values(sqlserver_connections_active{cluster=~\"$cluster\"}, target)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "NODOS",
+        "multi": false,
+        "name": "target",
+        "options": [
+          {
+            "selected": false,
+            "text": "SQL-CLUSTER-02nodo1",
+            "value": "SQL-CLUSTER-02nodo1"
+          },
+          {
+            "selected": true,
+            "text": "SQL-CLUSTER-02nodo2",
+            "value": "SQL-CLUSTER-02nodo2"
+          }
+        ],
+        "query": {
+          "query": "label_values(sqlserver_connections_active{cluster=~\"$cluster\"}, target)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "centinela-prometheus"
+        },
+        "definition": "label_values(sqlserver_connections_active{cluster=~\"$cluster\"}, database_name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Base de Datos",
+        "multi": false,
+        "name": "database",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          }
+        ],
+        "query": {
+          "query": "label_values(sqlserver_connections_active{cluster=~\"$cluster\"}, database_name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
+  "timezone": "browser",
+  "title": "01 - SQL Server Performance Investigator",
+  "uid": "centinela-sqlserver-cluster",
+  "version": 3
+}

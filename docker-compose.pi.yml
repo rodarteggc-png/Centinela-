@@ -1,0 +1,54 @@
+services:
+  prometheus:
+    volumes:
+      - ./prometheus/prometheus-pi.yml:/etc/prometheus/prometheus.yml:ro,z
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: centinela-clickhouse
+    restart: unless-stopped
+    profiles: [pi]
+    entrypoint: ["/entrypoint.sh"]
+    command:
+      - /bin/sh
+      - -ec
+      - 'test -n "$$CLICKHOUSE_PASSWORD" || { echo "CLICKHOUSE_PASSWORD is required for the PI profile" >&2; exit 64; }; exec /entrypoint.sh'
+    environment:
+      CLICKHOUSE_DB: centinela_pi
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-centinela_pi}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    volumes:
+      - ${CENTINELA_DATA_DIR:-/data/centinela}/clickhouse:/var/lib/clickhouse:z
+      - ./clickhouse/init:/docker-entrypoint-initdb.d:ro,z
+    networks:
+      - centinela-net
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --query 'SELECT 1' >/dev/null"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+
+  sampler:
+    build:
+      context: ./sampler
+      dockerfile: Dockerfile
+    image: centinela-sampler:local
+    container_name: centinela-sampler
+    restart: unless-stopped
+    profiles: [pi]
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    environment:
+      INVENTORY_FILE: /etc/centinela/databases_fleet.csv
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-centinela_pi}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+      SAMPLE_INTERVAL: ${PI_SAMPLE_INTERVAL:-3s}
+      SQL_QUERY_TIMEOUT: ${PI_SQL_QUERY_TIMEOUT:-2s}
+      METRICS_ADDR: :9500
+    volumes:
+      - ./inventory/databases_fleet.csv:/etc/centinela/databases_fleet.csv:ro,z
+    networks:
+      - centinela-net

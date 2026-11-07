@@ -1,0 +1,105 @@
+version: '3.8'
+
+# ============================================================
+#  CENTINELA — Plataforma de Observabilidad Empresarial
+#  Edición Producción Linux (Rocky Linux 9 / RHEL)
+# ============================================================
+#
+#  Servicios:
+#    - prometheus      : Métricas y reglas de SQL Server (:9090)
+#    - grafana         : Consola local de base de datos  (:3000)
+#    - sql-exporter    : Health Strip y Always On        (:9399)
+#
+#  REGLA DE ORO DE ALMACENAMIENTO:
+#  Todos los datos persistentes van a ${CENTINELA_DATA_DIR} (/data/centinela)
+#  para NUNCA saturar la partición raíz / (100 GB del SO).
+# ============================================================
+
+networks:
+  centinela-net:
+    driver: bridge
+
+services:
+
+  # ──────────────────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────────
+  # 2. Prometheus — Motor de Métricas
+  # ──────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.54.0
+    container_name: centinela-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--storage.tsdb.retention.size=50GB'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro,z
+      - ./prometheus/alerts:/etc/prometheus/alerts:ro,z
+      - ${CENTINELA_DATA_DIR:-/data/centinela}/prometheus:/prometheus:z
+    ports:
+      - "9090:9090"
+    networks:
+      - centinela-net
+
+  # ──────────────────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────────
+  # ──────────────────────────────────────────────────────────
+  # 3. Grafana — Consola Centinela Database PI
+  # ──────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: centinela-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - "GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:?Define GF_SECURITY_ADMIN_PASSWORD en .env}"
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_DOMAIN=${GF_SERVER_DOMAIN:-localhost}
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-http://localhost:3000}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/centinela-executive-overview.json
+      - GF_PANELS_DISABLE_SANITIZE_HTML=true
+      - GF_USERS_DEFAULT_THEME=dark
+      - GF_SERVER_APP_TITLE=Centinela
+      - GF_WHITE_LABELING_APP_TITLE=Centinela
+      - GF_HELP_ENABLED=false
+      - GF_NEWS_NEWS_FEED_ENABLED=false
+    volumes:
+      - ${CENTINELA_DATA_DIR:-/data/centinela}/grafana:/var/lib/grafana:z
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro,z
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro,z
+      - ./grafana/branding/index.html:/usr/share/grafana/public/views/index.html:ro,z
+      - ./grafana/branding/centinela-glass.css:/usr/share/grafana/public/centinela-glass.css:ro,z
+      - ./grafana/branding/grafana_icon.svg:/usr/share/grafana/public/img/grafana_icon.svg:ro,z
+      - ./grafana/branding/grafana_icon.svg:/usr/share/grafana/public/img/fav32.png:ro,z
+      - ./grafana/branding/grafana_icon.svg:/usr/share/grafana/public/img/grafana_com_auth_icon.svg:ro,z
+      - ./grafana/branding/grafana_icon.svg:/usr/share/grafana/public/img/grafana_mask_icon.svg:ro,z
+    ports:
+      - "3000:3000"
+    networks:
+      - centinela-net
+    depends_on:
+      - prometheus
+
+  # ──────────────────────────────────────────────────────────
+  # 4. SQL Server — Monitor PI inicial
+  # ──────────────────────────────────────────────────────────
+
+  # SQL Server Exporter (Soporta SQL Server On-Prem y Azure SQL)
+  sql-exporter:
+    image: burningalchemist/sql_exporter:0.24.12
+    container_name: centinela-sql-exporter
+    restart: unless-stopped
+    environment:
+      - SQLEXPORTER_CONFIG=/etc/sql_exporter/config.yml
+    volumes:
+      - ./exporters/sql-exporter/config.yml:/etc/sql_exporter/config.yml:ro,z
+    ports:
+      - "9399:9399"
+    networks:
+      - centinela-net
+
+

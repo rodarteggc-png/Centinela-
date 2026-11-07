@@ -1,0 +1,49 @@
+{
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
+  "files.eol": "\n",
+  "files.associations": {
+    "docker-compose*.yml": "dockercompose",
+    "**/prometheus/alerts/*.yml": "yaml",
+    "**/exporters/**/*.yml": "yaml",
+    "**/grafana/dashboards/*.json": "json"
+  },
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "json.format.enable": true,
+  "yaml.format.enable": true,
+  "yaml.validate": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.chat.welcomeMessage": "first",
+  "python.terminal.useEnvFile": true,
+  "chat.tools.terminal.autoApprove": {
+    "&": true,
+    "/^python -c \"import json,pathlib; files=\\[pathlib\\.Path\\('grafana/dashboards/centinela-sqlserver-cluster\\.json'\\),pathlib\\.Path\\('grafana/dashboards/centinela-databases-global-view\\.json'\\),pathlib\\.Path\\('portable/dashboards/centinela-sqlserver-cluster\\.json'\\),pathlib\\.Path\\('portable/dashboards/centinela-databases-global-view\\.json'\\)\\]; \\[json\\.loads\\(p\\.read_text\\(encoding='utf-8'\\)\\) for p in files\\]; assert all\\('centinela-executive-overview' not in p\\.read_text\\(encoding='utf-8'\\) for p in files\\); print\\('4 dashboards parse; all links stay within SQL Server PI'\\)\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^python -m unittest discover -s tests -v$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "Push-Location": true,
+    "Pop-Location": true,
+    "/^python -c \"from pathlib import Path; q=Path\\('sampler/sqlserver/active_sessions\\.sql'\\)\\.read_text\\(encoding='utf-8'\\); assert 'r\\.wait_resource' in q and 'r\\.sql_handle' not in q and 'r\\.plan_handle' not in q and 'CROSS APPLY' not in q; print\\('Fast-path SQL selects no text/plan handles'\\)\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^python -c \"import json,pathlib; p=pathlib\\.Path\\('grafana/dashboards/centinela-sqlserver-cluster\\.json'\\); d=json\\.loads\\(p\\.read_text\\(encoding='utf-8'\\)\\); panel=next\\(x for x in d\\['panels'\\] if x\\.get\\('id'\\)==1\\); assert 'centinela_aas_total' in panel\\['targets'\\]\\[0\\]\\['expr'\\]; assert 'centinela_sql_physical_cores' in panel\\['targets'\\]\\[1\\]\\['expr'\\]; print\\('AAS panel JSON and live metric targets are valid'\\)\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^powershell -ExecutionPolicy Bypass -File \\.\\\\scripts\\\\deploy-to-server\\.ps1$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "ssh": true,
+    "Copy-Item": true,
+    "Get-FileHash": true
+  },
+  "chat.agent.maxRequests": 200
+}

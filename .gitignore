@@ -1,0 +1,46 @@
+# ============================================================
+# CENTINELA — GITIGNORE EMPRESARIAL
+# ============================================================
+
+# Datos en caliente y almacenamiento de telemetria
+/data/
+/portable/data/
+/portable/bin/
+/portable/temp/
+/portable/scratch/
+*.tsdb
+*.wal
+
+# Archivos temporales y de respaldo
+*.bak
+*.tmp
+*.log
+test_*.yml
+test_*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# IDE y Sistema Operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# Credenciales locales temporales
+.env
+!.env.example
+.env.local
+.env.*.local
+
+# Generated/local connection files may contain production database credentials.
+inventory/databases_fleet.csv
+exporters/sql-exporter/config.yml
+AGENTS.md
+
+

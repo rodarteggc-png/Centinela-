@@ -1,0 +1,5 @@
+# Copy to databases_fleet.csv locally and replace placeholders before syncing.
+# Never commit the populated inventory; it may contain connection credentials.
+engine,instance_name,host_or_ip,port,environment,cluster_name,username,password,database_name
+sqlserver,sql-node-1,sqlserver1.example.invalid,1433,development,example-cluster,REPLACE_WITH_MONITOR_USER,REPLACE_WITH_MONITOR_PASSWORD,master
+sqlserver,sql-node-2,sqlserver2.example.invalid,1433,development,example-cluster,REPLACE_WITH_MONITOR_USER,REPLACE_WITH_MONITOR_PASSWORD,master

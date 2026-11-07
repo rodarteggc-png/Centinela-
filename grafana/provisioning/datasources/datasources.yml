@@ -1,0 +1,24 @@
+# ============================================================
+#  Grafana — Fuentes de Datos Auto-provisionadas
+#  Centinela — Plataforma de Observabilidad
+# ============================================================
+apiVersion: 1
+
+deleteDatasources:
+  - name: Tempo
+    orgId: 1
+  - name: Loki
+    orgId: 1
+
+datasources:
+  # Prometheus — Métricas
+  - name: Prometheus
+    type: prometheus
+    uid: centinela-prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      httpMethod: POST
+      timeInterval: "15s"
