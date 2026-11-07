@@ -250,8 +250,8 @@
         "y": 5
       },
       "type": "piechart",
-      "title": "Resource Time Distribution (% of Workload)",
-      "description": "Distribución porcentual del tiempo de motor en las 5 categorías canónicas de Centinela.",
+      "title": "Resource Time Distribution — acumulado de waits, NO es AAS",
+      "description": "Distribución porcentual de waits acumulados de sys.dm_os_wait_stats (rate). NO es AAS por sesiones activas. Usar solo como referencia histórica hasta validar el AAS por muestras.",
       "datasource": {
         "type": "prometheus",
         "uid": "centinela-prometheus"
