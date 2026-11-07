@@ -36,7 +36,6 @@ function Copy-ProjectFile {
 $files = @(
   "docker-compose.yml",
   "README.md",
-  "AGENTS.md",
   ".env.example",
   ".gitignore",
   ".github\copilot-instructions.md",
@@ -55,8 +54,16 @@ $files = @(
   "docs\MATRIZ_PARIDAD_FOGLIGHT_BD.md",
   "docs\PI_STORAGE_CONTRACT.md",
   "docs\GUIA_SQLSERVER_PI.md",
+  "docs\VALIDACION_AAS.md",
+  "docs\PREFLIGHT_AAS.md",
+  "docs\PRUEBA_CARGA_AAS.sql",
+  "docs\FASES_POR_MOTOR.md",
+  "docs\PARIDAD_PORCENTAJE.md",
   "clickhouse\init\001_pi_schema.sql",
   "clickhouse\queries\aas_by_minute.sql",
+  "clickhouse\queries\top_sql_by_samples.sql",
+  "clickhouse\queries\top_sql_text_by_samples.sql",
+  "clickhouse\queries\blocking_by_minute.sql",
   "sampler\go.sum",
   "sampler\Dockerfile",
   "sampler\go.mod",
@@ -73,6 +80,7 @@ $files = @(
   "sampler\internal\metrics\prometheus_test.go",
   "sampler\internal\model\samples.go",
   "sampler\internal\sqlserver\sampler.go",
+  "sampler\internal\sqlserver\sampler_test.go",
   "sampler\cmd\sampler\main.go"
 )
 

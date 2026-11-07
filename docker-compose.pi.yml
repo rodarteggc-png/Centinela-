@@ -1,4 +1,11 @@
 services:
+  grafana:
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+
   prometheus:
     volumes:
       - ./prometheus/prometheus-pi.yml:/etc/prometheus/prometheus.yml:ro,z

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"hash/fnv"
 	"math"
 	"time"
 
@@ -64,7 +65,9 @@ func (sampler *Sampler) Sample(ctx context.Context, instanceID, sampleID string)
 		var sessionID int64
 		var databaseName, loginName, hostName, programName sql.NullString
 		var command, requestStatus, waitType, waitCategory, waitResource sql.NullString
+		var sqlHandleHex sql.NullString
 		var cpuTime, logicalReads, physicalWrites, duration, waitDuration, blockingSession int64
+		var statementStartOffset, statementEndOffset int64
 		if err := rows.Scan(
 			&observedAt,
 			&sessionID,
@@ -83,6 +86,9 @@ func (sampler *Sampler) Sample(ctx context.Context, instanceID, sampleID string)
 			&waitCategory,
 			&blockingSession,
 			&waitResource,
+			&sqlHandleHex,
+			&statementStartOffset,
+			&statementEndOffset,
 		); err != nil {
 			return nil, time.Time{}, fmt.Errorf("scan SQL Server active-session row")
 		}
@@ -112,6 +118,7 @@ func (sampler *Sampler) Sample(ctx context.Context, instanceID, sampleID string)
 			DurationMS:        nonNegativeUint32(duration),
 			BlockingSessionID: int32(blockingSession),
 			WaitResource:      nullableString(waitResource),
+			StatementKey:      statementKey(nullableString(sqlHandleHex), statementStartOffset, statementEndOffset),
 		})
 	}
 	if err := rows.Err(); err != nil {
@@ -121,6 +128,19 @@ func (sampler *Sampler) Sample(ctx context.Context, instanceID, sampleID string)
 		sampleTime = time.Now().UTC()
 	}
 	return sessions, sampleTime, nil
+}
+
+// statementKey es un hash FNV-1a 64-bit del sql_handle + offsets.
+// Es opaco y estable por statement, nunca es el texto SQL ni un hash
+// del texto. El texto se resuelve aparte en centinela_pi.sql_text.
+func statementKey(sqlHandleHex string, startOffset, endOffset int64) uint64 {
+	if sqlHandleHex == "" {
+		return 0
+	}
+	h := fnv.New64a()
+	_, _ = h.Write([]byte(sqlHandleHex))
+	_, _ = h.Write([]byte(fmt.Sprintf(":%d:%d", startOffset, endOffset)))
+	return h.Sum64()
 }
 
 func nullableString(value sql.NullString) string {

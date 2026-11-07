@@ -1,0 +1,51 @@
+-- Centinela — Prueba de carga controlada para validar el AAS real
+-- SOLO en piloto, con aprobación del DBA, nunca en producción sin aviso.
+-- Objetivo: generar un número CONOCIDO de sesiones activas y comparar
+-- el AAS de Centinela contra el conteo manual en sys.dm_exec_requests.
+--
+-- Cómo usarlo:
+-- 1. Anota la hora de inicio y fin de cada escenario, minuto a minuto.
+-- 2. En otra sesión, cada minuto, corre el conteo manual de abajo.
+-- 3. Compara con Grafana (centinela_aas_total) y con ClickHouse
+--    (clickhouse/queries/aas_by_minute.sql) para ese mismo minuto.
+-- 4. AAS esperado = sesiones activas constantes en ese minuto.
+--    Ejemplo: 4 sesiones CPU constantes => AAS CPU cercano a 4.
+--
+-- Conteo manual de referencia (correr cada minuto durante la prueba):
+-- SELECT
+--     COUNT(*) AS sesiones_activas,
+--     SUM(CASE WHEN r.status IN ('running','runnable') THEN 1 ELSE 0 END) AS cpu_running,
+--     SUM(CASE WHEN r.blocking_session_id <> 0 THEN 1 ELSE 0 END) AS bloqueadas
+-- FROM sys.dm_exec_requests r
+-- JOIN sys.dm_exec_sessions s ON r.session_id = s.session_id
+-- WHERE s.is_user_process = 1 AND r.session_id <> @@SPID;
+--
+-- Escenario A — CPU: 4 sesiones constantes
+-- Abre 4 sesiones SSMS / sqlcmd y corre en cada una, al mismo tiempo,
+-- durante 5 minutos:
+--   WHILE 1=1 BEGIN SELECT COUNT(*) FROM sys.objects a CROSS JOIN sys.objects b; END
+-- Para parar: cierra las 4 sesiones. AAS CPU esperado: cercano a 4.
+--
+-- Escenario B — Sin carga: 0 sesiones
+-- Cierra todo lo anterior y espera 5 minutos.
+-- AAS esperado: 0 en todas las categorías, cobertura alta.
+-- Si el AAS no es 0, hay sesiones de fondo que hay que identificar.
+--
+-- Escenario C — Bloqueo: 1 bloqueador + 2 víctimas
+-- Sesión 1 (bloqueador):
+--   BEGIN TRAN; UPDATE TOP (1) sys.objects SET name = name; -- NO hacer COMMIT todavía
+-- Sesión 2 y 3 (víctimas, al mismo tiempo):
+--   UPDATE TOP (1) sys.objects SET name = name;
+-- Espera 3 minutos, anota el AAS Lock esperado: cercano a 2 bloqueadas + 1 bloqueador.
+-- Para parar: en la sesión 1, corre ROLLBACK.
+--
+-- Escenario D — Fallo inducido (cobertura, no AAS)
+-- Para el sampler o pon credenciales malas unos minutos.
+-- AAS NO debe caer a cero por el fallo. La cobertura
+-- (centinela_sampler_success_ratio) SÍ debe caer, y al recuperar
+-- debe volver sin huecos falsos.
+--
+-- Registro de evidencia (copiar a docs/MATRIZ_PARIDAD_FOGLIGHT_BD.md):
+-- Fecha, hora inicio/fin, escenario, sesiones esperadas,
+-- AAS Centinela por categoría, conteo manual, cobertura,
+-- y si coinciden o no.

@@ -1233,6 +1233,72 @@
         ]
       },
       "transparent": true
+    },
+    {
+      "id": 17,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 57
+      },
+      "type": "table",
+      "title": "PI — Top SQL por muestras (statement_key)",
+      "description": "Top por muestras de sesiones activas, no por caché. Requiere perfil PI con datos reales. El texto SQL aparece cuando centinela_pi.sql_text esté poblado; sin eso, se ve el statement_key.",
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "centinela-clickhouse"
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT a.statement_key, count() AS session_observations, countDistinct(a.session_id) AS distinct_sessions, anyLast(t.sql_text) AS sql_text\nFROM centinela_pi.sample_runs AS s\nINNER JOIN centinela_pi.active_session_samples AS a ON a.sample_id = s.sample_id AND a.instance_id = s.instance_id\nLEFT JOIN centinela_pi.sql_text AS t ON t.instance_id = a.instance_id AND t.statement_key = a.statement_key\nWHERE s.instance_id = '$target' AND s.sample_status = 'success' AND s.sample_time >= $__timeFrom() AND s.sample_time < $__timeTo() AND a.statement_key <> 0\nGROUP BY a.statement_key ORDER BY session_observations DESC LIMIT 10",
+          "refId": "A",
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "transparent": true
+    },
+    {
+      "id": 18,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 66
+      },
+      "type": "table",
+      "title": "PI — Bloqueos por minuto (bloqueador raíz y víctimas)",
+      "description": "Bloqueos por muestras: bloqueador raíz y víctimas por minuto. Requiere perfil PI con datos reales. Incluye sesión idle con transacción abierta.",
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "centinela-clickhouse"
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT toStartOfInterval(s.sample_time, INTERVAL 1 MINUTE) AS minute, a.blocking_session_id AS blocker_session_id, count() AS victim_observations, countDistinct(a.session_id) AS victim_sessions\nFROM centinela_pi.sample_runs AS s\nINNER JOIN centinela_pi.active_session_samples AS a ON a.sample_id = s.sample_id AND a.instance_id = s.instance_id\nWHERE s.instance_id = '$target' AND s.sample_status = 'success' AND s.sample_time >= $__timeFrom() AND s.sample_time < $__timeTo() AND a.blocking_session_id <> 0\nGROUP BY minute, a.blocking_session_id ORDER BY minute, victim_observations DESC",
+          "refId": "A",
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "transparent": true
     }
   ],
   "refresh": "10s",

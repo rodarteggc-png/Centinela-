@@ -22,3 +22,20 @@ datasources:
     jsonData:
       httpMethod: POST
       timeInterval: "15s"
+
+  # ClickHouse — PI / Performance Investigator
+  # Solo activo con el perfil pi. Requiere el plugin
+  # grafana-clickhouse-datasource, instalado con
+  # GF_INSTALL_PLUGINS en docker-compose.pi.yml.
+  # La contraseña se lee de CLICKHOUSE_PASSWORD del entorno.
+  - name: ClickHouse
+    type: grafana-clickhouse-datasource
+    uid: centinela-clickhouse
+    access: proxy
+    url: http://clickhouse:8123
+    editable: true
+    jsonData:
+      defaultDatabase: centinela_pi
+      username: ${CLICKHOUSE_USER:-centinela_pi}
+    secureJsonData:
+      password: ${CLICKHOUSE_PASSWORD}

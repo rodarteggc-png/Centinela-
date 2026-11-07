@@ -59,4 +59,6 @@ type ActiveSession struct {
 	DurationMS        uint32    `json:"duration_ms"`
 	BlockingSessionID int32     `json:"blocking_session_id"`
 	WaitResource      string    `json:"wait_resource"`
+	StatementKey      uint64    `json:"statement_key"`
+	PlanKey           uint64    `json:"plan_key"`
 }

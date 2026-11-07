@@ -76,12 +76,18 @@ func run() error {
 
 	instances := make([]model.Instance, 0, len(targets))
 	samplers := make([]*sqlserver.Sampler, 0, len(targets))
+	activeTargets := make([]config.Target, 0, len(targets))
 	for _, target := range targets {
 		sampler, openErr := sqlserver.Open(target)
 		if openErr != nil {
-			return fmt.Errorf("configure SQL Server target %q", target.Name)
+			// Un target malo no debe tumbar todo el sampler: se registra
+			// para que su cobertura se vea en 0 y se sigue con los demás.
+			log.Printf("SQL Server target unavailable instance=%s, skipping", target.Name)
+			registry.Register(target.Name, target.Cluster, nil)
+			continue
 		}
 		samplers = append(samplers, sampler)
+		activeTargets = append(activeTargets, target)
 
 		var logicalCPUs, visibleSchedulers *uint16
 		coreCtx, cancel := context.WithTimeout(ctx, queryTimeout)
@@ -113,10 +119,13 @@ func run() error {
 		return fmt.Errorf("initialize ClickHouse instance registry: %w", err)
 	}
 
-	for index, target := range targets {
+	if len(activeTargets) == 0 {
+		return fmt.Errorf("no SQL Server targets could be opened")
+	}
+	for index, target := range activeTargets {
 		go sampleTarget(ctx, target, samplers[index], writer, registry, interval, queryTimeout)
 	}
-	log.Printf("SQL Server PI sampler started for %d instance(s)", len(targets))
+	log.Printf("SQL Server PI sampler started for %d instance(s), %d target(s) skipped", len(activeTargets), len(targets)-len(activeTargets))
 
 	<-ctx.Done()
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

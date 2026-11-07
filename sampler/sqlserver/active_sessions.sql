@@ -54,7 +54,13 @@ SELECT
     END AS wait_category,
     COALESCE(NULLIF(wt.blocking_session_id, 0), NULLIF(r.blocking_session_id, 0), 0)
         AS blocking_session_id,
-    r.wait_resource
+    r.wait_resource,
+    -- Top SQL por texto: sql_handle como hex, para calcular statement_key
+    -- en el sampler (FNV-1a 64-bit). Nunca usar el texto SQL como etiqueta
+    -- Prometheus; el texto se guarda aparte en centinela_pi.sql_text.
+    CONVERT(VARCHAR(128), r.sql_handle, 2) AS sql_handle_hex,
+    r.statement_start_offset,
+    r.statement_end_offset
 FROM sys.dm_exec_requests AS r WITH (NOLOCK)
 INNER JOIN sys.dm_exec_sessions AS s WITH (NOLOCK)
     ON r.session_id = s.session_id

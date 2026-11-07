@@ -2,10 +2,9 @@
 
 ## Alcance vigente
 
-Construir un Foglight local para SQL Server, inicialmente limitado a los dos nodos inventariados de `SQL-CLUSTER-02`. El runtime es Grafana, Prometheus y SQL Exporter. El sampler y ClickHouse son la siguiente rebanada, aún no operativa.
-Construir un Foglight local para SQL Server, inicialmente limitado a los dos nodos inventariados de `SQL-CLUSTER-02`. El runtime base es Grafana, Prometheus y SQL Exporter; sampler y ClickHouse son opt-in con perfil `pi` y aún pendientes de validación operacional.
+Construir un Foglight local para el equipo de DBA, con Tavo como administrador, para vigilar todas las bases de la flota (420: SQL Server 300 servidores, PostgreSQL 50, Oracle 30, Azure 30 bases, MySQL 10). Fase 1: SQL Server, inicialmente limitado a los dos nodos inventariados de `SQL-CLUSTER-02` y al clúster 10 ya arriba. El runtime base es Grafana, Prometheus y SQL Exporter; sampler y ClickHouse son opt-in con perfil `pi` y aún pendientes de validación operacional.
 
-No añadir APM, demo-app, nube, Oracle ni PostgreSQL al runtime ni a la presentación actual. No afirmar paridad completa con Foglight antes de validar criterios en SQL Server.
+Fases por motor: 1 SQL Server, 2 PostgreSQL, 3 Oracle (RAC), 4 Azure, 5 MySQL. Ningún motor se publica sin conexión real, métricas reales y validación por DBA. No añadir APM ni demo-app. No afirmar paridad completa con Foglight antes de validar criterios en cada motor.
 
 ## Reglas técnicas
 
